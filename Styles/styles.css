@@ -63,11 +63,12 @@ body {
 }
 #imageGalleryContainer .img-container img {
   border-radius: 45px;
+  margin: 0 10px 0 0;
 }
 #imageGalleryContainer .img-container h4 {
   background-color: rgba(0, 0, 0, 0.5);
   border-radius: 40px;
-  padding: 10px;
+  padding: 10px 20px 10px 20px;
   color: white;
   font-family: "niveau-grotesk", sans-serif;
   font-style: italic;
@@ -75,5 +76,12 @@ body {
   font-size: 3rem;
   position: absolute;
   left: 4%;
-  bottom: 0;
+  bottom: -10%;
+}
+#imageGalleryContainer .img-container span {
+  font-size: 4rem;
+  color: rgba(226, 12, 22, 0.4);
+  position: absolute;
+  right: 4%;
+  top: 5%;
 }/*# sourceMappingURL=styles.css.map */
