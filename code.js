@@ -150,49 +150,107 @@ const imageGalleryContainer = document.getElementById('imageGalleryContainer');
 const likedImagesListContainer = document.getElementById('likedImageListContainer');
 const likedImageList = likedImagesListContainer.querySelector('ol');
 
+function setupListToggle() {
+    const angleDownIcon = document.querySelector('.fa-angle-down');
+    const popOutList = document.querySelector('.pop-out-list');
+
+    console.log('Initial likedImageList children count: ', likedImageList.children.length)
+
+    angleDownIcon.addEventListener('click', () => {
+        console.log('Angle down icon clicked.');
+        console.log('current visibility before toggle: ', popOutList.style.visibility);
+
+            const isVisible = popOutList.style.visibility === 'visible';
+            popOutList.style.visibility = isVisible ? 'hidden' : 'visible';
+            angleDownIcon.style.transform = isVisible ? 'rotate(0deg)' : 'rotate(180deg)';
+    });
+    updateListContainerVisibility();  
+}; 
+
+function updateListContainerVisibility() {
+    const containerIcon = document.querySelector('.container-icon');
+    const heartIcon = containerIcon.querySelector('.fa-heart');
+    const angleDownIcon = document.querySelector('.fa-angle-down');
+    const popOutList = document.querySelector('.pop-out-list');
+    const hasLikedImages = likedImageList.children.length > 0;
+
+    containerIcon.classList.toggle('active', hasLikedImages);
+    heartIcon.classList.toggle('active', hasLikedImages);
+    angleDownIcon.style.visibility = hasLikedImages ? 'visible' : 'hidden';
+    popOutList.style.visibility = hasLikedImages ? 'hidden' : 'hidden';
+    angleDownIcon.style.transform = hasLikedImages ? 'rotate(180deg)' : 'rotate(0deg)';
+}
+
+ 
+setupListToggle();
+
 document.addEventListener('DOMContentLoaded', function() {
     gsap.registerPlugin(ScrollTrigger);
+    renderGallery();
+    loadLikedImages();
+    setupListToggle();
+    function renderGallery() {
+        galleryImages.forEach((image, index) => {
+            const imgContainer = document.createElement('div');
+            imgContainer.classList.add('img-container');
+            imgContainer.id = `img-${image.title.replace(/\s+/g, '-')}`;
+            const img = document.createElement('img');
+            img.src = image.src;
+            img.alt = image.alt;
+            img.title = image.title;
 
-    galleryImages.forEach((image, index) => {
-        const imgContainer = document.createElement('div');
-        imgContainer.classList.add('img-container');
-        imgContainer.id = `img-${image.title.replace(/\s+/g, '-')}`;
-        const img = document.createElement('img');
-        img.src = image.src;
-        img.alt = image.alt;
-        img.title = image.title;
+            const imgCaption = document.createElement('h4');
+            imgCaption.classList.add('img-caption');
+            imgCaption.textContent = image.title;
 
-        const imgCaption = document.createElement('h4');
-        imgCaption.classList.add('img-caption');
-        imgCaption.textContent = image.title;
+            const likeBtn = document.createElement('span');
+            likeBtn.classList.add('like-btn');
+            likeBtn.innerHTML = `<i class="fa-solid fa-heart"></i>`;
+            likeBtn.setAttribute('data-title', image.title);
 
-        const likeBtn = document.createElement('span');
-        likeBtn.classList.add('like-btn');
-        likeBtn.innerHTML = `<i class="fa-solid fa-heart"></i>`;
-        likeBtn.setAttribute('data-title', image.title);
-
-        likeBtn.addEventListener('click', function() {
-            this.classList.toggle('active');
-            updatedLikedImagesList(image.title, this.classList.contains('active'));
-            saveLikesToLocalStorage();
-        });
+            likeBtn.addEventListener('click', function() {
+                this.classList.toggle('active');
+                updatedLikedImagesList(image.title, this.classList.contains('active'));
+                saveLikesToLocalStorage();
+            });
 
         imgContainer.appendChild(img);
         imgContainer.appendChild(imgCaption);
         imgContainer.appendChild(likeBtn);
         imageGalleryContainer.appendChild(imgContainer);
 
-        const fromTop = index % 2 === 0;
-        const initialY = fromTop ? -100 : 100;
+        setupAnimationForImage(imgContainer, index);
 
-        /*  INSERT GSAP ANIMATIONS HERE   */
-
-        
-
-
-    });
-    loadLikedImages();
+        });
+        loadLikedImages();
+        setupListToggle();
+    }
 });
+
+function setupAnimationForImage(imgContainer, index) {
+    let fromDirection = index % 2 === 0 ? {y: -100} : {y: 100};
+    let toDirection = index % 2 === 0 ? {x: -100} : {x: 100};
+
+    gsap.timeline({
+        ScrollTrigger: {
+            trigger: imgContainer,
+            start: 'left center',
+            end: 'right center',
+            scrub: true,
+            pin: true,
+            horizontal: true,
+            toggleActions: 'play reverse play reverse'
+        }
+    })
+    .fromTo(imgContainer,
+        { scale: 0, autoAlpha: 0, ...fromDirection },
+        { scale: 1, autoAlpha: 1, ...fromDirection, duration: 1 }
+    )
+    .to(imgContainer,
+        { scale: 0, autoAlpha: 0, ...toDirection, duration: 1 },
+        )
+
+}
 
 function updatedLikedImagesList(title, isActive) {
     const existingItem = Array.from(likedImageList.children).find(li => li.textContent === title);
@@ -200,21 +258,26 @@ function updatedLikedImagesList(title, isActive) {
     if (isActive && !existingItem) {
         const listItem = document.createElement('li');
         const link = document.createElement('a');
-        like.href = `#img-${title.replace(/\s+/g, '-')}`;
+        link.href = `#img-${title.replace(/\s+/g, '-')}`;
         link.textContent = title;
         listItem.appendChild(link);
         likedImageList.appendChild(listItem);
     } else if (!isActive && existingItem) {
         likedImageList.removeChild(existingItem);
     };
+    updateListContainerVisibility();
+
+    /*angleDownIcon.style.visibility = likedImageList.children.length > 0 ? 'visible' : 'hidden';
 
     toggleLikedImagesContainerVisibility();
-    saveLikesToLocalStorage();
+    saveLikesToLocalStorage();*/
 };
+
+
 
 function saveLikesToLocalStorage() {
     const likedIndices = galleryImages.map((img, index) => {
-        return document.querySelector(`[data-title="${img.title}"]`).classList.contains ('active') ? index : null;
+        return likeBtn && likeBtn.classList.contains ('active') ? index : null;
     }).filter(index => index !== null);
 
     localStorage.setItem('likedImages', JSON.stringify(likedIndices));
@@ -222,28 +285,33 @@ function saveLikesToLocalStorage() {
 
 function loadLikedImages() {
     const savedLikedIndices = JSON.parse(localStorage.getItem('likedImages')) || [];
+    console.log('saved liked indices: ', savedLikedIndices);
     savedLikedIndices.forEach(index => {
         const image = galleryImages[index];
-        const listItem = document.createElement('li');
-        const link = document.createElement('a');
-        like.href = `#img-${title.replace(/\s+/g, '-')}`;
-        link.textContent = image.title;
-        listItem.appendChild(link);
-        likedImageList.appendChild(listItem);
-
         const likeBtn = document.querySelector(`[data-title="${image.title}"]`);
         if (likeBtn) {
             likeBtn.classList.add('active');
+            updatedLikedImagesList(image.title, true);
         };
+
+
+        
     });
     toggleLikedImagesContainerVisibility();
 };
 
 const toggleLikedImagesContainerVisibility = () => {
-    const likedImageListContainer = document.getElementById('likedImagesListContainer');
+    const containerIcon = document.querySelector('.container-icon');
+    const heartIcon = containerIcon.querySelector('.fa-heart');
+    const popOutList = document.querySelector('.pop-out-list');
+
     if (likedImageList.children.length > 0) {
-        likedImageListContainer.classList.add('active');
+        containerIcon.classList.add('active');
+        heartIcon.classList.add('active');
+        popOutList.style.visibility = 'hidden';
     } else {
-        likedImageListContainer.classList.remove('active');
+        containerIcon.classList.remove('active');
+        heartIcon.classList.remove('active');
+        popOutList.style.visibility = 'hidden';
     }
 }

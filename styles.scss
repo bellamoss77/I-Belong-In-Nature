@@ -1,8 +1,46 @@
 @import url("https://use.typekit.net/efa7ivj.css");
 @import url("https://use.typekit.net/efa7ivj.css");
 
+/*  MIXINS, VARIABLES, KEYFRAMES    */
 
+@mixin includeWebKits($property, $value) {
+    -webkit-#{$property}: $value;
+    -moz-#{$property}: $value;
+    -o-#{$property}: $value;
+    $property: $value;
+}
 
+@mixin flexColumn($justify, $align) {
+    display: flex;
+    flex-direction: column;
+    justify-content: $justify;
+    align-items: $align;
+}
+
+@keyframes heartBeat {
+    0% {
+        transform: scale(1);
+        opacity: 0.6;
+    }
+    25% {
+        transform: scale(1.25);
+        opacity: 0.8;
+    }
+    50% {
+        transform: scale(1);
+        opacity: 0.6;
+    }
+    75% {
+        transform: scale(1.25);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0.6;
+    }
+}
+
+/*  START STYLING   */
 body {
     margin: 0;
     padding: 0;
@@ -78,7 +116,7 @@ body {
             font-size: 3rem;
             position: absolute;
             left: 4%;
-            bottom: -10%;
+            bottom: 0;
         }
         span {
             font-size: 4rem;
@@ -86,7 +124,75 @@ body {
             position: absolute;
             right: 4%;
             top: 5%;
+            &:hover {
+                animation: heartBeat 2s infinite;
+                cursor: pointer;
+            }
+            &.active {
+                color: rgba(226, 12, 22, 1);
+            }
+        }
+    } 
+}
+#likedImageListContainer {
+    position: fixed;
+    @include flexColumn(center, center);
+    left: 0;
+    top: 50%;
+    .container-icon {
+        border-radius: 25px;
+        z-index: 1;
+        @include flexColumn(center, center);
+        background-color: rgba(0,0,0,0.5);
+        padding: 5%;
+        text-align: center;
+        &.active {
+            background-color: rgba(0,0,0,1);
+        }
+        i.fa-heart {
+            padding: 10px;
+            margin: 0;
+            font-size: 3rem;
+            color: rgba(226,12,22,0.5);
+            &.active {
+                color: rgba(226, 12, 22, 1);
+            }
+        }
+        p {
+            padding-top: 0;
+            margin-top: 5px;
+            font-size: 1.25rem;
+            color: #fff;
+            font-family: "dream-big-regular", sans-serif;
+        }
+        i.fa-angle-down {
+            font-size: 1rem;
+            color: #fff;
+            visibility: hidden;
+            cursor: pointer;
         }
     }
-   
+    .pop-out-list {
+        visibility: hidden;
+        z-index: -1;
+        padding: 0px 15px 0px 0px;
+        background-color: rgba(226, 12, 22, 1);
+        color: #fff;
+        border-radius: 25px;
+        @include flexColumn(center, center);
+        margin: auto;
+        text-align: center;
+        font-family: "niveau-grotesk", sans-serif;
+        ol {
+            list-style: none;
+            font-weight: 400;
+            font-size: 1rem;
+            text-align: center;
+            a {
+                color: white;
+                text-align: center;
+            }
+        }
+
+    }
 }
