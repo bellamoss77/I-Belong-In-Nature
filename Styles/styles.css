@@ -1,0 +1,79 @@
+@import url("https://use.typekit.net/efa7ivj.css");
+@import url("https://use.typekit.net/efa7ivj.css");
+body {
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(90deg, rgb(12, 21, 165) 0%, rgb(15, 208, 182) 25%, rgb(45, 192, 13) 42%, rgb(229, 231, 41) 65%, rgb(181, 238, 251) 85%, rgb(175, 23, 162) 103%);
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  width: auto;
+  height: 100%;
+  overflow-y: scroll;
+}
+
+#intro-text {
+  width: 100vw;
+  height: 125vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  background: radial-gradient(circle, rgb(219, 9, 26) 0%, rgb(208, 145, 15) 24%, rgb(223, 172, 21) 38%, rgb(229, 231, 41) 58%, rgb(41, 197, 231) 99%);
+  margin-bottom: 10%;
+}
+#intro-text h1 {
+  font-size: 10rem;
+  color: #fff;
+  font-family: "dream-big-wide", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+  position: absolute;
+  top: 10px;
+}
+#intro-text h2 {
+  font-size: 8rem;
+  color: #b5eefb;
+  font-family: "dream-big-regular", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  margin-bottom: 0;
+  position: absolute;
+  top: 40%;
+}
+#intro-text h3 {
+  font-size: 3rem;
+  color: #fff;
+  font-family: "niveau-grotesk", sans-serif;
+  font-weight: 200;
+  font-style: normal;
+  position: absolute;
+  top: 0;
+}
+
+#imageGalleryContainer {
+  display: flex;
+  width: auto;
+  height: 100vh;
+}
+#imageGalleryContainer .img-container {
+  position: relative;
+  border-radius: 45px;
+}
+#imageGalleryContainer .img-container img {
+  border-radius: 45px;
+}
+#imageGalleryContainer .img-container h4 {
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 40px;
+  padding: 10px;
+  color: white;
+  font-family: "niveau-grotesk", sans-serif;
+  font-style: italic;
+  font-weight: 200;
+  font-size: 3rem;
+  position: absolute;
+  left: 4%;
+  bottom: 0;
+}/*# sourceMappingURL=styles.css.map */
