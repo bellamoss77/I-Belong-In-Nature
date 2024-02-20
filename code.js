@@ -40,7 +40,7 @@ const galleryImages = [
         alt: 'Dogs in the woods',
         title: 'I Belong... 10'
     }, {
-        src: 'images/iBelongInNature_11.png',
+        src: 'images/iBelongInNature_11_.png',
         alt: 'Dogs in the woods',
         title: 'I Belong... 11'
     }, {
@@ -184,16 +184,22 @@ function updateListContainerVisibility() {
  
 setupListToggle();
 
+
+
 document.addEventListener('DOMContentLoaded', function() {
     gsap.registerPlugin(ScrollTrigger);
+
     renderGallery();
     loadLikedImages();
     setupListToggle();
+
     function renderGallery() {
+
         galleryImages.forEach((image, index) => {
             const imgContainer = document.createElement('div');
-            imgContainer.classList.add('img-container');
+            imgContainer.classList.add('img-container', 'panel');
             imgContainer.id = `img-${image.title.replace(/\s+/g, '-')}`;
+
             const img = document.createElement('img');
             img.src = image.src;
             img.alt = image.alt;
@@ -211,6 +217,7 @@ document.addEventListener('DOMContentLoaded', function() {
             likeBtn.addEventListener('click', function() {
                 this.classList.toggle('active');
                 updatedLikedImagesList(image.title, this.classList.contains('active'));
+
                 saveLikesToLocalStorage();
             });
 
@@ -221,36 +228,34 @@ document.addEventListener('DOMContentLoaded', function() {
 
         setupAnimationForImage(imgContainer, index);
 
+        
         });
+
         loadLikedImages();
         setupListToggle();
+
     }
+    function setupAnimationForImage(imgContainer, index) {
+        gsap.from(imgContainer, {
+         autoAlpha: 0,
+         y: 50,
+         duration: 1,
+         ease: 'elastic',
+         ScrollTrigger: {
+             trigger: imgContainer,
+             start: 'top 80%',
+             toggleActions: 'play reverse play reverse',
+         }
+        });
+     
+     }
+
+    
+    
+
 });
 
-function setupAnimationForImage(imgContainer, index) {
-    let fromDirection = index % 2 === 0 ? {y: -100} : {y: 100};
-    let toDirection = index % 2 === 0 ? {x: -100} : {x: 100};
 
-    gsap.timeline({
-        ScrollTrigger: {
-            trigger: imgContainer,
-            start: 'left center',
-            end: 'right center',
-            scrub: true,
-            pin: true,
-            horizontal: true,
-            toggleActions: 'play reverse play reverse'
-        }
-    })
-    .fromTo(imgContainer,
-        { scale: 0, autoAlpha: 0, ...fromDirection },
-        { scale: 1, autoAlpha: 1, ...fromDirection, duration: 1 }
-    )
-    .to(imgContainer,
-        { scale: 0, autoAlpha: 0, ...toDirection, duration: 1 },
-        )
-
-}
 
 function updatedLikedImagesList(title, isActive) {
     const existingItem = Array.from(likedImageList.children).find(li => li.textContent === title);
@@ -276,6 +281,10 @@ function updatedLikedImagesList(title, isActive) {
 
 
 function saveLikesToLocalStorage() {
+    const likeBtn = document.createElement('span');
+    likeBtn.classList.add('like-btn');
+    likeBtn.innerHTML = `<i class="fa-solid fa-heart"></i>`;
+    likeBtn.setAttribute('data-title', image.title);
     const likedIndices = galleryImages.map((img, index) => {
         return likeBtn && likeBtn.classList.contains ('active') ? index : null;
     }).filter(index => index !== null);

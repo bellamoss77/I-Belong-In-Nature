@@ -78,8 +78,8 @@ body {
 
 #imageGalleryContainer {
   display: flex;
-  width: auto;
-  height: 100vh;
+  flex-direction: column;
+  min-height: 100vh;
 }
 #imageGalleryContainer .img-container {
   position: relative;

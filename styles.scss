@@ -96,8 +96,8 @@ body {
 
 #imageGalleryContainer {
     display: flex;
-    width: auto;
-    height: 100vh;
+    flex-direction: column;
+    min-height: 100vh;
     .img-container {
         position: relative;
         border-radius: 45px;
